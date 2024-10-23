@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ModalComponent from './Modal';
 import { addDoc, collection, onSnapshot, doc, deleteDoc, updateDoc, arrayUnion } from 'firebase/firestore';
-import { database } from '../../firebase/firebase'; // Ensure the path is correct
-import { getAuth } from 'firebase/auth'; // To get the current user's email
+import { database } from '../../firebase/firebase'; 
+import { getAuth, signOut } from 'firebase/auth'; 
 
 export default function Docs() {
     const [open, setOpen] = useState(false);
@@ -74,7 +74,7 @@ export default function Docs() {
             });
     };
 
-    // Function to share a document by adding an email to the `sharedEmails` array
+    // Function to share a document by adding an email to the sharedEmails array
     const shareDocument = () => {
         const documentRef = doc(database, 'docsData', currentDocId);
         updateDoc(documentRef, {
@@ -102,9 +102,29 @@ export default function Docs() {
         navigate(`/editDocs/${id}`); // Ensure the user is coming from the home page
     };
 
+    // Logout function
+    const handleLogout = () => {
+        signOut(auth)
+            .then(() => {
+                navigate('/login'); // Redirect to login page after logout
+            })
+            .catch((error) => {
+                alert('Error logging out: ' + error.message);
+            });
+    };
+
     return (
         <div className='docs-main'>
-            <h1>Document Collaboration Software</h1>
+            <a className='logout-btn' onClick={handleLogout}>
+                Logout
+            </a>
+            <div className="heading">
+                <h1>Document Collaboration Software</h1>
+            </div>
+            
+            {/* Logout button in the top-right corner */}
+            
+
             <button className='add-docs' onClick={handleOpen}>
                 Add a Document
             </button>

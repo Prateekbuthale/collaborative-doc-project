@@ -8,10 +8,26 @@ body {
 }
 
 .docs-main {
-    text-align: center;
-    padding: 40px 20px; /* Added padding for spaciousness */
-}
+    /* text-align: center; */
 
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.logout-btn{
+  float:right;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  color: #007bff;
+}
+.heading{
+    margin:0 auto;
+    display:block;
+    text-align: center;
+}
+.section{
+  text-align: center;
+}
 h1 {
     font-family: 'Poppins', sans-serif;
     font-weight: 600;
@@ -25,6 +41,8 @@ h2 {
   margin-bottom: 20px;
 }
 .add-docs {
+    margin:0 auto;
+    display:block;
     height: 40px;
     width: 200px;
     background-color: #007bff; /* Simple blue color */
@@ -36,7 +54,8 @@ h2 {
     transition: background-color 0.3s, transform 0.3s;
     border-radius: 4px; /* Rounded corners */
     vertical-align: middle;
-
+    align-items: center;
+    
 }
 
 .add-docs:hover {
@@ -295,7 +314,6 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 20px 0;
 }
 
 .border-b-2 {
@@ -345,4 +363,15 @@ svg {
     border-radius: 4px;
     vertical-align: middle;
     margin-left: 20px;
+}
+
+.save-btns {
+  display: flex;
+  justify-content: space-between; /* Ensure buttons are spaced out evenly */
+  align-items: center;
+}
+.save-btns div {
+  /* flex: 2;  */
+  text-align: center;
+  margin: 0 15px; 
 }
