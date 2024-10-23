@@ -9,7 +9,10 @@ export default function Docs() {
     const [open, setOpen] = useState(false);
     const [shareOpen, setShareOpen] = useState(false); // State for share modal
     const [title, setTitle] = useState('');
-    const [docsData, setDocsData] = useState([]);
+    const [docsData, setDocsData] = useState({
+        createdByMe: [],
+        sharedWithMe: []
+    });
     const [shareEmail, setShareEmail] = useState(''); // State for the email to share with
     const [currentDocId, setCurrentDocId] = useState(''); // To track the current document being shared
     const isMounted = useRef(false);
@@ -48,20 +51,14 @@ export default function Docs() {
     // Fetch data from Firebase Firestore
     const getData = () => {
         onSnapshot(collectionRef, (data) => {
-            const userDocs = data.docs.filter(doc => doc.data().email === user.email); // Docs by the logged-in user
-            const sharedDocs = data.docs.filter(doc => doc.data().sharedEmails && doc.data().sharedEmails.includes(user.email)); // Docs shared with the user
+            const createdByMe = data.docs.filter(doc => doc.data().email === user.email); // Docs by the logged-in user
+            const sharedWithMe = data.docs.filter(doc => doc.data().sharedEmails && doc.data().sharedEmails.includes(user.email)); // Docs shared with the user
 
-            // Combine both document arrays and ensure uniqueness
-            const combinedDocs = [
-                ...userDocs,
-                ...sharedDocs.filter(sharedDoc => !userDocs.some(userDoc => userDoc.id === sharedDoc.id))
-            ];
-
-            setDocsData(
-                combinedDocs.map((doc) => {
-                    return { ...doc.data(), id: doc.id };
-                })
-            );
+            // Update state with both arrays
+            setDocsData({
+                createdByMe: createdByMe.map(doc => ({ ...doc.data(), id: doc.id })),
+                sharedWithMe: sharedWithMe.map(doc => ({ ...doc.data(), id: doc.id }))
+            });
         });
     };
 
@@ -102,7 +99,7 @@ export default function Docs() {
 
     // Get ID and navigate to the EditDocs page
     const getID = (id) => {
-        navigate(`/editDocs/${id}`, { state: { fromHome: true } });  // Ensure the user is coming from the home page
+        navigate(`/editDocs/${id}`); // Ensure the user is coming from the home page
     };
 
     return (
@@ -120,25 +117,49 @@ export default function Docs() {
                 addData={addData}
             />
 
-            {/* Display data from Firestore */}
-            <div className='grid-main'>
-                {docsData.map((doc) => (
-                    <div className='grid-child' key={doc.id}>
-                        <p onClick={() => getID(doc.id)}>{doc.title}</p>
-                        <button
-                            className='delete-docs'
-                            onClick={() => deleteDocument(doc.id)}
-                        >
-                            Delete
-                        </button>
-                        <button
-                            className='share-docs'
-                            onClick={() => handleShareOpen(doc.id)} // Open share modal for this document
-                        >
-                            Share
-                        </button>
-                    </div>
-                ))}
+            {/* Documents Created by Me */}
+            <div className='section'>
+                <h2>Documents Created by You</h2>
+                <div className='grid-main'>
+                    {docsData.createdByMe.length === 0 ? (
+                        <p>No documents created by you.</p>
+                    ) : (
+                        docsData.createdByMe.map((doc) => (
+                            <div className='grid-child' key={doc.id}>
+                                <p onClick={() => getID(doc.id)}>{doc.title}</p>
+                                <button
+                                    className='delete-docs'
+                                    onClick={() => deleteDocument(doc.id)}
+                                >
+                                    Delete
+                                </button>
+                                <button
+                                    className='share-docs'
+                                    onClick={() => handleShareOpen(doc.id)} // Open share modal for this document
+                                >
+                                    Share
+                                </button>
+                            </div>
+                        ))
+                    )}
+                </div>
+            </div>
+
+            {/* Documents Shared with Me */}
+            <div className='section'>
+                <h2>Documents Shared with You</h2>
+                <div className='grid-main'>
+                    {docsData.sharedWithMe.length === 0 ? (
+                        <p>No documents shared with you.</p>
+                    ) : (
+                        docsData.sharedWithMe.map((doc) => (
+                            <div className='grid-child' key={doc.id}>
+                                <p onClick={() => getID(doc.id)}>{doc.title}</p>
+                                {/* Removed the Share button for documents shared with the user */}
+                            </div>
+                        ))
+                    )}
+                </div>
             </div>
 
             {/* Share Modal */}
