@@ -1,38 +1,325 @@
-.App {
-  text-align: center;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Roboto:wght@400&display=swap');
+
+body {
+    background-color: #f9f9f9; /* Soft light background */
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.docs-main {
+    text-align: center;
+    padding: 40px 20px; /* Added padding for spaciousness */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+h1 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    color: #333; /* Darker text for contrast */
+    margin-bottom: 20px;
+}
+
+.add-docs {
+    height: 40px;
+    width: 200px;
+    background-color: #007bff; /* Simple blue color */
+    border: none;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    color: white; /* White text for contrast */
+    transition: background-color 0.3s, transform 0.3s;
+    border-radius: 4px; /* Rounded corners */
+    vertical-align: middle;
+
+}
+
+.add-docs:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: translateY(-2px); /* Lift effect on hover */
+}
+
+.add-input {
+    width: 95%;
+    height: 40px;
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 4px;
+    padding: 10px;
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 20px; /* Space between input and button */
+}
+
+button{
+  height: 40px;
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  background-color: #6366f1; /* indigo background */
+  color: white;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+}
+
+.button-container {
+    text-align: center;
+    margin-bottom: 30px; /* Space below button container */
+    height: 1000px;
+}
+.MuiBox-root{
+  height: 1000px;
+}
+.grid-main {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Responsive grid */
+    color: #333; /* Dark text for grid items */
+    margin-top: 20px;
+    gap: 20px;
+}
+
+.grid-child {
+    padding: 20px;
+    background-color: #ffffff; /* White background for grid items */
+    border: 1px solid #e0e0e0; /* Light gray border */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer;
+    transition: box-shadow 0.3s;
+}
+
+.grid-child:hover {
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow on hover */
+}
+
+.editDocs-main {
+    font-family: 'Poppins', sans-serif;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.editDocs-inner {
+    width: 8.5in;
+    min-height: 11in;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    background-color: #ffffff; /* White background for the edit area */
+    border-radius: 4px; /* Rounded corners */
+}
+.container .ql-toolbar.ql-snow {
+    display: flex;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #F3F3F3;
+    border: none;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, .5);
   }
+.ql-container.ql-snow {
+    border: none !important;
+}
+*, *::before, *::after {
+    box-sizing: border-box;
+  }
+  
+  body {
+    background-color: #F3F3F3;
+    margin: 0;
+  }
+  
+  .container .ql-editor {
+    width: 8.5in;
+    min-height: 11in;
+    padding: 1in;
+    margin: 1rem;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, .5);
+    background-color: white;
+  }
+  
+  .container .ql-container.ql-snow {
+    border: none;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .container .ql-toolbar.ql-snow {
+    display: flex;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #F3F3F3;
+    border: none;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, .5);
+  }
+  
+  @page {
+    margin: 1in;
+  }
+  
+  @media print {
+    body {
+      background: none;
+    }
+  
+    .container .ql-editor {
+      width: 6.5in;
+      height: 9in;
+      padding: 0;
+      margin: 0;
+      box-shadow: none;
+      align-self: flex-start;
+    }
+  
+    .container .ql-toolbar.ql-snow {
+      display: none;
+    }
+  }
+
+  .delete-docs {
+    height: 40px;
+    width: 100px;
+    background-color: #007bff; 
+    border: none;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    color: white; 
+    transition: background-color 0.3s, transform 0.3s;
+    border-radius: 4px;
+    vertical-align: middle;
+
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.delete-docs:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+  transform: translateY(-2px); 
+}
+
+
+/* General page styling */
+body, html {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Main container for login form */
+main {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  height: 100vh;
+  background-color: #f3f4f6; /* light gray background */
 }
 
-.App-link {
-  color: #61dafb;
+/* Login form container */
+.w-96 {
+  width: 24rem; /* Width for the form (96 * 0.25 = 24rem) */
+  padding: 20px;
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* subtle shadow */
+  border: 1px solid #ddd; /* light border */
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Text input fields */
+input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: #fafafa; /* light background */
+  transition: border-color 0.3s;
+}
+
+input:focus {
+  border-color: #4f46e5; /* blue on focus */
+  outline: none;
+}
+
+/* Labels for inputs */
+label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #6b7280; /* gray text */
+  margin-top: 20px;
+}
+
+/* Submit button styling */
+
+button:hover {
+  background-color: #291fe1; /* darker indigo on hover */
+}
+
+button:disabled {
+  background-color: #d1d5db; /* gray when disabled */
+  cursor: not-allowed;
+}
+
+/* Link for Sign up */
+a {
+  color: #6366f1;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Error message styling */
+.text-red-600 {
+  color: #dc2626; /* red color */
+  font-weight: bold;
+}
+
+/* Divider styling */
+.flex-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+
+.border-b-2 {
+  border-bottom: 2px solid #e5e7eb; /* light gray */
+}
+
+.text-sm {
+  font-size: 14px;
+}
+
+/* Google sign-in button */
+button[onClick] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  font-weight: 600;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: white;
+  transition: background-color 0.3s ease;
+}
+
+button[onClick]:hover {
+  background-color: #f9fafb; /* light background on hover */
+}
+
+button[onClick]:disabled {
+  cursor: not-allowed;
+}
+
+svg {
+  width: 20px;
+  height: 20px;
 }
