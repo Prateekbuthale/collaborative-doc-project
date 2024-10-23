@@ -15,6 +15,7 @@ export default function Docs() {
     });
     const [shareEmail, setShareEmail] = useState(''); // State for the email to share with
     const [currentDocId, setCurrentDocId] = useState(''); // To track the current document being shared
+    const [permission, setPermission] = useState('read'); // State for permission (Editor/Viewer)
     const isMounted = useRef(false);
     const navigate = useNavigate();
     const auth = getAuth(); // Get auth instance
@@ -36,7 +37,7 @@ export default function Docs() {
             addDoc(collectionRef, {
                 title: title,
                 email: user.email, // Store the email in the Firestore collection
-                sharedEmails: [] // Initialize the sharedEmails array
+                sharedWith: [] // Initialize the sharedWith array with email and permissions
             })
                 .then(() => {
                     alert('Data Added');
@@ -52,7 +53,7 @@ export default function Docs() {
     const getData = () => {
         onSnapshot(collectionRef, (data) => {
             const createdByMe = data.docs.filter(doc => doc.data().email === user.email); // Docs by the logged-in user
-            const sharedWithMe = data.docs.filter(doc => doc.data().sharedEmails && doc.data().sharedEmails.includes(user.email)); // Docs shared with the user
+            const sharedWithMe = data.docs.filter(doc => doc.data().sharedWith && doc.data().sharedWith.some(share => share.email === user.email)); // Docs shared with the user
 
             // Update state with both arrays
             setDocsData({
@@ -74,11 +75,11 @@ export default function Docs() {
             });
     };
 
-    // Function to share a document by adding an email to the sharedEmails array
+    // Function to share a document by adding an email with permission (read/write) to the sharedWith array
     const shareDocument = () => {
         const documentRef = doc(database, 'docsData', currentDocId);
         updateDoc(documentRef, {
-            sharedEmails: arrayUnion(shareEmail) // Add the email to the sharedEmails array
+            sharedWith: arrayUnion({ email: shareEmail, permission: permission }) // Add the email and permission to the sharedWith array
         })
             .then(() => {
                 alert('Document shared successfully');
@@ -121,9 +122,6 @@ export default function Docs() {
             <div className="heading">
                 <h1>Document Collaboration Software</h1>
             </div>
-            
-            {/* Logout button in the top-right corner */}
-            
 
             <button className='add-docs' onClick={handleOpen}>
                 Add a Document
@@ -175,7 +173,6 @@ export default function Docs() {
                         docsData.sharedWithMe.map((doc) => (
                             <div className='grid-child' key={doc.id}>
                                 <p onClick={() => getID(doc.id)}>{doc.title}</p>
-                                {/* Removed the Share button for documents shared with the user */}
                             </div>
                         ))
                     )}
@@ -192,6 +189,13 @@ export default function Docs() {
                         value={shareEmail}
                         onChange={(e) => setShareEmail(e.target.value)}
                     />
+                    <select
+                        value={permission}
+                        onChange={(e) => setPermission(e.target.value)}
+                    >
+                        <option value='read'>Viewer (Read Only)</option>
+                        <option value='write'>Editor (Read & Write)</option>
+                    </select>
                     <button onClick={shareDocument}>Share</button>
                     <button onClick={handleShareClose}>Cancel</button>
                 </div>

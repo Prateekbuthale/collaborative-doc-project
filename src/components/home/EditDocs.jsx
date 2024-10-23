@@ -15,6 +15,7 @@ import { ref, uploadBytesResumable } from 'firebase/storage'; // For uploading t
 import { Packer, Document, Paragraph } from 'docx'; // To generate .docx files
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { getAuth } from 'firebase/auth'; // To get the current logged-in user
 
 export default function EditDocs({ database }) {
     const isMounted = useRef(false);
@@ -24,19 +25,31 @@ export default function EditDocs({ database }) {
     
     const [documentTitle, setDocumentTitle] = useState('');
     const [docsDesc, setDocsDesc] = useState('');
+    const [permission, setPermission] = useState('write'); // Default permission to 'write'
+
+    const auth = getAuth();
+    const user = auth.currentUser;
 
     // Get content from the Quill editor
     const getQuillData = (value) => {
         setDocsDesc(value);
     };
 
-    // Fetch data from Firestore
+    // Fetch data from Firestore, including user's permission
     const getData = () => {
         const documentRef = doc(collectionRef, params.id);
         onSnapshot(documentRef, (docs) => {
             const data = docs.data();
             setDocumentTitle(data?.title || '');  // Use optional chaining to avoid errors
             setDocsDesc(data?.docsDesc || '');    // Ensure it's not undefined
+
+            // Check user's permission from the sharedWith array
+            if (data?.sharedWith && user) {
+                const sharedUser = data.sharedWith.find((entry) => entry.email === user.email);
+                if (sharedUser) {
+                    setPermission(sharedUser.permission); // Set user's permission
+                }
+            }
         });
     };
 
@@ -89,10 +102,10 @@ export default function EditDocs({ database }) {
         });
     };
 
-    // Fetch and update document in Firestore
+    // Fetch and update document in Firestore, if the user has write permission
     useEffect(() => {
         const updateDocsData = setTimeout(() => {
-            if (docsDesc !== undefined && docsDesc !== '') {
+            if (docsDesc !== undefined && docsDesc !== '' && permission === 'write') {
                 const documentRef = doc(collectionRef, params.id);
                 updateDoc(documentRef, {
                     docsDesc: docsDesc
@@ -106,7 +119,7 @@ export default function EditDocs({ database }) {
             }
         }, 1000);
         return () => clearTimeout(updateDocsData);
-    }, [docsDesc, params.id]);
+    }, [docsDesc, params.id, permission]);
 
     useEffect(() => {
         if (!isMounted.current) {
@@ -117,30 +130,31 @@ export default function EditDocs({ database }) {
 
     return (
         <div className='editDocs-main'>
-            {/* Save buttons */}
-            <div className='save-btns'>
-                <div>
-                    <button onClick={saveDocumentLocally} className='sbtn'>
-                        Save as .docx locally
-                    </button>
+            {/* Save buttons, shown only for users with write permission */}
+            {permission === 'write' && (
+                <div className='save-btns'>
+                    <div>
+                        <button onClick={saveDocumentLocally} className='sbtn'>
+                            Save as .docx locally
+                        </button>
+                    </div>
+                    <div>
+                        <button onClick={saveDocumentToFirebase} className='sbtn'>
+                            Save to Firebase Storage
+                        </button>
+                    </div>
                 </div>
-                <div>
-                    <button onClick={saveDocumentToFirebase} className='sbtn'>
-                        Save to Firebase Storage
-                    </button>
-                </div>
-                
-            </div>
+            )}
+
             <h1>{documentTitle}</h1>
             <div className='editDocs-inner'>
                 <ReactQuill
                     className='react-quill'
                     value={docsDesc}
                     onChange={getQuillData}
+                    readOnly={permission === 'read'} // Disable editing if user has read-only access
                 />
             </div>
-
-            
 
             <ToastContainer />
         </div>
